@@ -1,4 +1,5 @@
 import typing
+import re
 
 import ecf_parser
 from ecf_parser.patterns import *
@@ -6,6 +7,13 @@ from ecf_parser.patterns import *
 
 def strip_whitespace(line):
     return line.strip(' \t\n\r')
+
+def strip_comment(line):
+    pos = line.find ('#')
+    if pos != -1:
+        return line[:pos]
+    else:
+        return line
 
 
 def value_formatter(value):
@@ -121,8 +129,10 @@ def consume_ecf_line(line, entry=None) -> typing.Tuple['Entry', bool]:
     the boolean value represents whether the entry has seen an "ENTRY_END" signal, and should be considered closed
     """
 
+    line = strip_comment(line)
     line = strip_whitespace(line)
     line_class = classify_line(line)
+    #print (line, line_class)
     if entry is not None:
         active_entry = entry if not hasattr(entry, "_active_child") else entry._active_child
     if line_class == "PROPERTY_LINE":
