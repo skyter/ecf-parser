@@ -1,5 +1,4 @@
 import typing
-import re
 
 import ecf_parser
 from ecf_parser.patterns import *
